@@ -3,8 +3,8 @@ package ProductList;
 import java.util.*;
 
 public class Recipe {
-    String name;
-    double cost;
+    private String name;
+    private double cost;
     Map<Product, Integer> products = new HashMap<>();
 
     public Recipe(String name, Collection<Product> products) {
@@ -20,10 +20,7 @@ public class Recipe {
     }
 
     public void addProduct(Product product, int quantity) {
-        if (!products.containsKey(product)) {
-            products.put(product, quantity);
-            cost = mathCost();
-        } else if (products.get(product) == quantity) {
+        if (products.containsKey(product) && products.get(product) == quantity) {
             throw new RuntimeException("Продукт уже добавлен в рецепт!");
         } else {
             products.put(product, quantity);
@@ -39,7 +36,7 @@ public class Recipe {
             p.setWeight(inputDouble());
             System.out.println("Введите новую стоимость килограмма продукта.");
             p.setCost(inputDouble());
-            this.addProduct(p,quantity);
+            this.addProduct(p, quantity);
         } else System.out.println("Продукта нет в рецепте!");
     }
 

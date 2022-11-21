@@ -8,16 +8,16 @@ public class Main {
         task2();
         task3();
         task4();
-        task5();
+        task5(10);
     }
 
     static void task1() {
         System.out.println("Задание 1");
         PhoneBook phoneBook = new PhoneBook();
-        phoneBook.put("Unknown", 1230123456789L);
-        phoneBook.remove("Unknown");
+        phoneBook.addSubscriber("Unknown", 1230123456789L);
+        phoneBook.removeSubscriber("Unknown");
         for (int i = 0; i < 20; i++) {
-            phoneBook.put(generateName(), generateNumber());
+            phoneBook.addSubscriber(generateName(), generateNumber());
         }
         phoneBook.printInfo();
         System.out.println("\n");
@@ -68,7 +68,7 @@ public class Main {
     static void task4() {
         System.out.println("Задание 4");
         Map<String, List<Integer>> map = new HashMap<>();
-        for (int i = 0; i < 5; i++) {
+        while (map.size()<5) {
             map.put(generateName(), generateList());
         }
 
@@ -90,11 +90,13 @@ public class Main {
         System.out.println("\n");
     }
 
-    static void task5() {
+    static void task5(int size) {
         System.out.println("Задание 5");
         Map<String, Integer> map = new LinkedHashMap<>();
-        for (int i = 0; i < 10; i++) {
+        int i = 0;
+        while (map.size()<size) {
             map.put(generateName(), i);
+            i++;
         }
         for (Map.Entry<String, Integer> me : map.entrySet()) {
             System.out.println(me.getKey() + ":" + me.getValue());
@@ -104,14 +106,14 @@ public class Main {
 
     static void addMethod(Map<String,Integer> map, String key, Integer value) {
         if (map.containsKey(key) && map.get(key).equals(value)) {
-            throw new RuntimeException("This mam contains this pair");
+            throw new RuntimeException("This map contains this pair");
         } else map.put(key, value);
     }
 
     static String generateName() {
         Random rnd = new Random();
         char[] ch = new char[5];
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < ch.length; i++) {
             ch[i] = (char) (97 + rnd.nextInt(26));
         }
         return new String(ch);
