@@ -3,13 +3,15 @@ package ProductList;
 import java.util.*;
 
 public class Recipe {
-    String name;
-    double cost;
-    Set<Product> products = new HashSet<>();
+    private String name;
+    private double cost;
+    Map<Product, Integer> products = new HashMap<>();
 
     public Recipe(String name, Collection<Product> products) {
         this.name = name;
-        this.products.addAll(products);
+        for (Product p : products) {
+            this.products.put(p, 1);
+        }
         cost = mathCost();
     }
 
@@ -17,28 +19,31 @@ public class Recipe {
         this.name = name;
     }
 
-    public void addProduct(Product product) {
-        if (!products.add(product)) System.out.println("Продукт уже добавлен в рецепт!");
-        cost = mathCost();
+    public void addProduct(Product product, int quantity) {
+        if (products.containsKey(product) && products.get(product) == quantity) {
+            throw new RuntimeException("Продукт уже добавлен в рецепт!");
+        } else {
+            products.put(product, quantity);
+            cost = mathCost();
+        }
     }
 
-    public void changeProduct(Product product) {
-        if (products.contains(product)) {
+    public void changeProduct(Product product, int quantity) {
+        if (products.containsKey(product)) {
             products.remove(product);
             Product p = product;
             System.out.println("Введите новый вес продукта.");
             p.setWeight(inputDouble());
-            System.out.println("Введите новый стоимость килограмма продукта.");
+            System.out.println("Введите новую стоимость килограмма продукта.");
             p.setCost(inputDouble());
-            products.add(p);
-            cost = mathCost();
-        } else System.out.println("Продукт нет в рецепте!");
+            this.addProduct(p, quantity);
+        } else System.out.println("Продукта нет в рецепте!");
     }
 
     private double mathCost() {
         double d = 0;
-        for (Product p : products) {
-            d += p.getCost() * p.getWeight();
+        for (Map.Entry<Product, Integer> me : products.entrySet()) {
+            d += me.getKey().getCost() * me.getKey().getWeight() * me.getValue();
         }
         return d;
     }
@@ -88,8 +93,9 @@ public class Recipe {
         String str1 = "Рецепт " + getName() + ":";
         if (products.isEmpty()) str1 += "\nПуст!";
         StringBuilder sb = new StringBuilder(str1);
-        for (Product p : products) {
-            sb.append("\n").append(p.toString());
+        for (Map.Entry<Product, Integer> me : products.entrySet()) {
+            sb.append("\n").append(me.getKey().toString());
+            sb.append(" в количестве ").append(me.getValue()).append(" шт.");
         }
         sb.append("\n").append(String.format("Суммарная стоимость: %.2f рублей.", cost));
         return sb.toString();
